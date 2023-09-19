@@ -1,5 +1,12 @@
 # JAVA
 
+## 遇到过的问题
+
+- 对于单选框或单选按钮的触发器触发两次的问题
+  - 一次点击会导致两次的值改变
+  - trye->false,false->true
+  - 需要在触发器开始时加一个`e.getValueIsAdjusting()==true`
+
 - 自定义的包名不能与java自带的包重合,内置文件声明包必须与外部包相同
 
 ## IDEA
@@ -84,6 +91,17 @@ String s1="java";//字符常量
 String s2=new String("java");//字符串变量对象
 s1==s2是比较地址，s1.equals(s2)是比较内容
 ~~~
+
+### 类型转换
+
+- int转String
+  - `String numInString = String.valueOf(num);`
+  - 对Integer对象`String numInString = num.toString();`
+  - 对int对象`String numInString = Integer.toString(num);`
+- String转int
+  - `Integer.parseInt(String)`返回int类
+  - `Integer.valueOf(String)`返回Integer类
+
 
 ### 集合框架
 
@@ -522,3 +540,239 @@ try{
 
     - 删除某一目录时，必须保证该目录下没有其他文件才能正确删除，否则将删除失败
     - **java.io.File.delete()** 
+
+## 多线程编程
+
+## 学堂在线错题
+
+- .java文件保存编写程序的源代码，.class字节码文件保存编译后的二进制文件
+- JDK>JRE>JVM
+- Java编写的程序只能在JVM环境中运行。
+- true，false和null看起来像关键字，但事实上它们是字面量，不是关键字。
+- Java语言的字符采用Unicode字符集编码方案。
+- 引用数据类型有类、接口和数组
+- 若定义有short s; byte b; char c; 则表达式s - b + c的结果类型为==int==
+- 逻辑与&和简洁与&&的区别
+- Java提供了4种能在循环结构中使用的跳转语句：分别是break语句、continue语句、return语句和throw语句
+- 面向对象编程的三个特性：封装，继承，多态
+- 与POP（面向过程）相比，OOP（面向对象）最大的特点是将数据与过程看成同等重要
+- 封装的基本单位是类
+- 成员方法修饰符：protected,synchronized
+- 静态方法不能使用this
+- 构造函数没有任何返回值，包括 void，默认返回类型就是对象类型本身
+- java.awt是用于创建图形用户界面的包，提供了用于实现图形界面的组件，如窗口、按钮、文本框、对话框等；java.util包含了一些实用类和有用的数据结构，如集合框架类、日期类等
+- 包是用来管理.java文件的(x)
+- 在访问权限设置时，最小访问权限原则是一个必须要坚持的原则
+- 类成员变量（静态变量）存放于方法区，实例变量（成员变量）存放在堆内存，局部变量存放在栈内存
+- foreach循环不可以改变变量的值，但是可以用它去改变对象的值
+- 对象数组的的存储在堆中是链式的
+- 当继承一个抽象类时，必须要实现抽象类的抽象方法(抽象类不用)
+- final 修饰的成员变量必须手动初始化
+- 成员内部类不能含有static修饰的成员变量和方法
+- 匿名内部类是独立的类
+- 面向对象设计的最高原则是开闭原则
+- 多重捕获的形参隐含为final修饰，不能为其赋值
+- try语句中出现异常之后的语句不会被执行
+- 一个图形界面应用程序可以有多个JFrame
+- 通过File对象不能对文件内容进行读/写操作
+- 对象若要实现序列化，其所属的类必须实现==Serializable==接口
+- 对象序列化时，不会保存static和==transient==类型的变量。
+- ==Externalizable==接口用于在进行对象序列化时自行确定哪些变量需要保留
+- 主关键字是表中的一个或多个字段
+- 同一进程中的线程可以直接共享进程中的数据、资源
+- ==synchronized==同步方法
+- ==volatile==使变量始终对其它变量可见
+- volatile不能保证原子性 ，而通过synchronized进行正确的同步后，是可以保证原子性的
+- Java中进行UDP通信时，常用DatagramSocket类把要发送的信息打包。
+- 在其它类中创建内部类对象`Outer.Inner i = new Outer().new Inner()`
+
+## Java上机考试重要知识点练习
+
+\1.   图形界面的创建，事件处理。
+ 组件：文本区JTextArea，按钮JButton，框架JFrame，面板JPanel，滚动面板JScrollPane，标签JLabel，布局管理器等。
+
+文本区：设置自动换行，添加滚动面板，设置文本区内容，追加文本区内容。
+
+事件处理：ActionEvent
+
+~~~java
+JTextArea jt = new JTextArea();
+jt.setLineWrap(true);
+JScrollPane js = new JScrollPane(jt);
+jt.setText("aa");
+jt.append("bb");
+JButton jb = new JButton("确认");
+JPanel jp = new JPanel();
+jp.setLayout(new FlowLayout());
+JLabel jl = new JLabel("是否确认");
+JFrame jf = new JFrame();
+jf.add(BorderLayout.CENTER,jp);
+jf.setSize(800,500);
+jf.setResizable(false);
+jf.setVisable(true);
+jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+class ButtonEvent implements ActionListener{
+    public void actionPerformed(ActionEvent e){
+		if(e.getSource()==jb){
+			System.out.print("0");
+        }
+    }
+}
+ButtonEvent be = new ButtonEvent();
+jb.addActionListener(be);
+
+jb1.addActionListener(new ActionListener(){
+    public void actionPerformed(ActionEvent e){
+		if(e.getSource()==jb){
+			System.out.print("1");
+        }
+    }
+})
+    
+jb2.addActionListener(()->{
+    System.out.print("2");
+})
+~~~
+
+
+
+\2.   文件流的创建与使用。
+
+~~~java
+File myFile = new File("");
+
+FileInputStream fis = new FileInputStream(myFile);
+int n;
+while((n=fis.read())!=-1){
+	System.out.print((char)n);
+}
+fis.close();
+
+byte buf = new byte[(int)(file.length())];
+fis.read(buf);
+
+FileOutputStream fos = new FileOutputStream(myFile,true);//追加方式
+byte buffer[] = s.getBytes();
+fos.write(buffer);
+
+for (int i =0;i<s.length();i++){
+	fos.write(s.charAt(i));
+}
+
+~~~
+
+
+
+\3.   数组和对象数组的创建、初始化，数组元素的访问、赋值等。
+
+~~~java
+int[] a = new int[5];
+int[] b =Arrays.copyOf(a,a.length-1)
+Student aStudent ={new Student(),new Student()}
+~~~
+
+\4.   随机数的生成。
+
+使用Math.random()或其他方法。
+
+**通过 (int) (Math.random()\*N) 可以随机产生一个[0,N-1]之间的正整数。**
+
+`(int)(Math.random()*N+Y)`
+
+~~~java
+Random r = new Random();
+a = r.nextInt(10);
+~~~
+
+
+
+\5.   多线程
+
+线程类的定义，线程对象的创建和启动，线程的同步（synchronized）。
+
+~~~java
+class ThreadTest extends Thread{
+    public void run(){
+
+    }
+}
+ThreadTest tt = new ThreadTest();
+tt.start();
+
+class RunnableTest implments Runnable{
+    public void run(){
+
+    }
+}
+RunnableTest rt = new RunnableTest();
+Thread t = new Thread(rt);
+t.start();
+
+class MyThread implements Callable<String>{
+    public String call(){
+    	return ""
+    }
+}
+MyThread mt = new MyThread();
+FutureTask<String> ft = new FutureTask<String>(mt);
+Thread t = new Thread(ft);
+t.start();
+System.out.print(ft.get());
+
+public synchronized void a(){
+	while(){
+		this.wait();
+    }
+    this.notify();
+}
+
+synchronized(this){
+
+}
+~~~
+
+
+
+\6.   在类之间传递对象的方法：可以通过构造方法传递。
+
+~~~java
+class A{
+int a=1;
+public int getA(){
+    return this.a;
+}
+}
+
+
+import A;
+class B{
+int b=2;
+public void setB(int n){
+    this.b=n;
+}
+
+public static void main(String[] arg){
+A a = new A();
+B b = new B();
+b.setB(a.getA());
+}
+}
+~~~
+
+
+
+\7.   内部类的使用。
+
+- ~~~java
+  FileReader fr = new FileReader(file);
+  int n;
+  while((n=fr.read())!=-1){
+      System.out.print((char)n);
+  }
+  ~~~
+
+- ~~~java
+  byte buffer[] =s.getBytes();
+  fos.write(buffer);
+  ~~~

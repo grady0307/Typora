@@ -39,6 +39,7 @@ CREATE TABLE runoob_tbl(
 - AUTO_INCREMENT定义列为自增的属性，一般用于主键，数值会自动加1。
 - PRIMARY KEY关键字用于定义列为主键。 您可以使用多列来定义主键，列间以逗号分隔。
 - ENGINE 设置存储引擎，CHARSET 设置编码。
+- 可以用CHECK短语指定满足条件
 
 ##### 删除数据表
 
@@ -58,7 +59,7 @@ INSERT INTO table_name ( field1, field2,...fieldN )
 
 `select * from runoob_tbl;`
 
-- ```
+- ```sql
   SELECT column_name,column_name
   FROM table_name
   [WHERE Clause]
@@ -74,7 +75,7 @@ INSERT INTO table_name ( field1, field2,...fieldN )
 
 ##### WHERE 子句
 
-```
+```sql
 SELECT field1, field2,...fieldN FROM table_name1, table_name2...
 [WHERE condition1 [AND [OR]] condition2.....
 ```
@@ -126,7 +127,7 @@ WHERE field1 LIKE condition1 [AND [OR]] filed2 = 'somevalue'
 
 MySQL UNION 操作符用于连接两个以上的 SELECT 语句的结果组合到一个结果集合中。多个 SELECT 语句会删除重复的数据
 
-```
+```sql
 SELECT expression1, expression2, ... expression_n
 FROM tables
 [WHERE conditions]
@@ -145,7 +146,7 @@ ORDER BY expression1;
 
 #####  排序
 
-```
+```sql
 SELECT field1, field2,...fieldN FROM table_name1, table_name2...
 ORDER BY field1 [ASC [DESC][默认 ASC]],
 ```
@@ -254,3 +255,184 @@ select @rank:=@rank + 1 AS num,a.* from
 
 @rank 是 用户自定义的变量，:=是赋值的作用
 
+### 模糊查询
+
+[(27条消息) 数据库MySQL数据查询---模糊查询（like和relike(或regexp)）_转身～见的博客-CSDN博客_sql中relike](https://blog.csdn.net/qq_41025698/article/details/102563441)
+
+### 视图
+
+- 虚拟表 
+- 在执行create view语句的结果只是把视图的定义存入数据字典，并不执行其中的select语句
+
+分类
+
+- 行列子集视图（单表
+- 分组视图
+- 带表达式的视图（带虚拟列
+
+语法
+
+- 创建：`create [or replace] view stu_v_1 as select id,name from student where id<= 10`
+
+- 查询创建视图的语句：`show create stu_v_1`
+- 查看视图数据：`select * from stu_v_1`
+
+- 修改：`create or replace view stu_v_1 as select语句 [with[cascaded | local ] check option]`  
+- 修改：`alter view stu_v_1 as select 语句`  
+- 删除：`drop view [if exists] 视图名称 [CASCADE]`，加上cascade级联删除
+
+检查选项
+
+- 使用`with cascaded check option`，检查真正更改的每个行，以使其符合视图的定义
+
+- cascaded用于基于另一个视图创建视图时，父视图的检查也会启用
+
+- 检查选项的传递性
+
+![image-20230720113041699](MySQL.assets/image-20230720113041699.png)
+
+- local没有传递性
+
+视图更新
+
+![image-20230720113709651](MySQL.assets/image-20230720113709651.png)
+
+## DQL
+
+### 基本查询
+
+![image-20230726185637011](MySQL.assets/image-20230726185637011.png)
+
+### 条件查询
+
+![image-20230726185905386](MySQL.assets/image-20230726185905386.png)
+
+### 分组查询
+
+![image-20230726190321996](MySQL.assets/image-20230726190321996.png)
+
+![image-20230726191002415](MySQL.assets/image-20230726191002415.png)
+
+![image-20230726193806301](MySQL.assets/image-20230726193806301.png)
+
+==where不能对聚合函数进行判断==
+
+- count(*) 和 count(某个具体的字段) 他们有什么区别？
+  - count(*):是统计的总记录条数
+  - count(某个具体的字段):是统计当前这个字段不为NUll的数据总条数
+
+- case when
+
+  - ~~~sql
+    SELECT
+        EmployeeName,
+        Salary,
+        CASE Department
+            WHEN 'HR' THEN Salary * 1.1
+            WHEN 'IT' THEN Salary * 1.15
+            WHEN 'Sales' THEN Salary * 1.12
+            ELSE Salary
+        END AS UpdatedSalary
+    FROM Employees;
+    ~~~
+
+  - ~~~sql
+    SELECT
+        StudentName,
+        Grade,
+        CASE
+            WHEN Grade >= 90 THEN 'A'
+            WHEN Grade >= 80 THEN 'B'
+            WHEN Grade >= 70 THEN 'C'
+            ELSE 'F'
+        END AS GradeLetter
+    FROM Students;
+    ~~~
+
+### 分页查询
+
+![image-20230726194331723](MySQL.assets/image-20230726194331723.png)
+
+![image-20230726194722035](MySQL.assets/image-20230726194722035.png)
+
+### 总结
+
+![image-20230726194956988](MySQL.assets/image-20230726194956988.png)
+
+## 多表设计
+
+### 外键
+
+一对多
+
+![image-20230728112357180](MySQL.assets/image-20230728112357180.png)
+
+![image-20230728113241198](MySQL.assets/image-20230728113241198.png)
+
+一对一 
+
+![image-20230728113457525](MySQL.assets/image-20230728113457525.png)
+
+多对多
+
+![image-20230728113827196](MySQL.assets/image-20230728113827196.png)
+
+### 多表查询
+
+- 在多表查询时，需要消除无效的笛卡尔积
+
+链接查询
+
+- 自然连接：`select sno from student natural join sc`
+
+- 内连接
+  - ![image-20230728143701967](MySQL.assets/image-20230728143701967.png)
+  - 只查询交集部分的数据
+- 外连接
+  - ![image-20230728144114996](MySQL.assets/image-20230728144114996.png)
+  - 完全包含左表或右表的数据
+
+子查询 
+
+![image-20230728144313041](MySQL.assets/image-20230728144313041.png)
+
+![image-20230728144543116](MySQL.assets/image-20230728144543116.png)
+
+![image-20230728150519535](MySQL.assets/image-20230728150519535.png)
+
+![image-20230728150612916](MySQL.assets/image-20230728150612916.png)
+
+- 使用in时条件应单独列出`WHERE student.dept IN ('信息系', '计算机系');`
+
+### 事务
+
+![image-20230728151145704](MySQL.assets/image-20230728151145704.png)
+
+![image-20230728151235997](MySQL.assets/image-20230728151235997.png)
+
+特性
+
+![image-20230728151527944](MySQL.assets/image-20230728151527944.png)
+
+### 索引
+
+概念
+
+- 帮助数据库高效获取数据的数据结构
+
+结构
+
+- MySQL默认B+Tree(多路平衡搜索树)
+
+![image-20230728152626683](MySQL.assets/image-20230728152626683.png)
+
+语法
+
+![image-20230728152708168](MySQL.assets/image-20230728152708168.png)
+
+- 主键和唯一约束会自动创建索引
+
+## Tips
+
+- `where Sno is Null`不能写成`where Sno=Null`空值不能进行运算，即avg或其它聚合运算时自动舍弃NULL
+- 使用AS可以定义别名
